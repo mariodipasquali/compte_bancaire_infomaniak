@@ -1,0 +1,24 @@
+[Unit]
+Description=Tenue de compte bancaire (serveur HTTP local, derriere nginx)
+After=network.target
+
+[Service]
+Type=simple
+# Tout est regroupe dans /opt/compte_bancaire :
+#   - compte_bancaire.py  (le script)
+#   - compte.db           (la base SQLite)
+#   - compte.db.*.bak     (sauvegardes automatiques, 10 conservees)
+#   - compte_bancaire.log (journal)
+ExecStart=/usr/bin/python3 /opt/compte_bancaire/compte_bancaire.py 8000 /opt/compte_bancaire/compte.db
+Environment=COMPTE_BANCAIRE_DIR=/opt/compte_bancaire
+WorkingDirectory=/opt/compte_bancaire
+User=www-data
+Restart=always
+RestartSec=3
+# durcissement minimal
+NoNewPrivileges=yes
+ProtectSystem=full
+ReadWritePaths=/opt/compte_bancaire
+
+[Install]
+WantedBy=multi-user.target
